@@ -64,7 +64,7 @@ async function performTranslation() {
 
 
 
-  function startWebViewer(f) {
+  async function startWebViewer(f) {
     WebViewer(
       {
         path: '/webviewer/lib',
@@ -84,7 +84,7 @@ async function performTranslation() {
     });
   }
 
-  function startSecondWebViewer(f) {
+  async function startSecondWebViewer(f) {
     WebViewer(
       {
         path: '/webviewer/lib',
