@@ -1,27 +1,66 @@
 import React, { useRef, useState } from 'react';
 import WebViewer from '@pdftron/pdfjs-express';
+import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
 import './App.css';
+
+import SettingsModal from './modals/SettingsModal';
+import Translate from './services/Translator';
 
 const App = () => {
   const viewer = useRef(null);
+  const second_viewer = useRef(null);
   const inputFile = useRef(document.getElementById("file"))
-  const xfdfFile = useRef(document.getElementById("xfdfFile"))
-  const [xfdf, setXfdf] = useState("");
-  
+  const comparisonFile = useRef(document.getElementById("comparisonFile"))
+
+  // Get from the SettingsModal
+  const [apiKey, setApiKey] = useState("");
+  const [source, setSource] = useState("en");
+  const [target, setTarget] = useState("en");
+  const [display, setDisplay] = useState("ja");
+
+  // Get from App.js
+  const [oneString, setOneString] = useState("")
+  const [twoString, setTwoString] = useState("")
 
 
-  
-  
-  function getAnnots(f) {
-    const reader = new FileReader()
-    reader.onload = async (f) => { 
-      const text = (f.target.result)
-      console.log(text)
-      setXfdf(text)
+  const [setShowSettingsModal] = useState(true);
+  const [showResultsModal, setShowResultsModal] = useState(false);
+
+  // Send to ResultsModal
+  const [oneResult, setOneResult] = useState("");
+  const [twoResult, setTwoResult] = useState("");
+
+
+  const onChangeValueHandler = (val) => {
     
-    };
-    reader.readAsText(f)
+    let whichVal = val.split(":")[0]
+    let valToSet = val.split(":")[1]
+
+    if (whichVal === "apiKey") {
+      setApiKey(valToSet)
+    }
+    if (whichVal === "sourceCode") {
+      setSource(valToSet)
+    }
+    if (whichVal === "targetCode") {
+      setTarget(valToSet)
+    }
+    if (whichVal === "displayCode") {
+      setDisplay(valToSet)
+    }
   }
+
+function handleCloseResultsModal() {
+  setShowResultsModal(false);
+}
+
+async function performTranslation() {
+  let returned = await Translate(source, target, display, apiKey, oneString, twoString)
+  console.log(returned)
+  setOneResult(returned[0])
+  setTwoResult(returned[1])
+  setShowResultsModal(true)
+}
 
 
 
@@ -34,81 +73,32 @@ const App = () => {
       viewer.current,
     ).then((instance) => {
       instance.loadDocument(f, { filename: f.name });
-      const { docViewer, Annotations } = instance;
-      const annotManager = docViewer.getAnnotationManager();
-      docViewer.on('documentLoaded', async () => {
-
-        const xfdfString = xfdf
-
-        // This is the string of annotations we need!  
-        // Now all we have to do is comb through it, and delete everything that isn't
-        // FreeText with a white background, or a line
-
-        // Then we import the xfdfString again, so the annots appear
-        await annotManager.importAnnotations(xfdfString)
-
-        // Finally, we just re-create the acrobat *.js file below
-        const a = annotManager.getAnnotationsList();
-       
-          
-        
-
-        var fbCount = 1;
-        var pagesToSave = [];
-        var annotsToDelete = [];
-        var data = "";
-        for (var o = 0; o < a.length; o++) {
-          console.log("Page " + a[o].PageNumber + "here");
-          var typeOfAnnot = a[o].Subject;
-        
-          
-          
-          console.log(typeOfAnnot);
-          
-          if (typeOfAnnot === "引き出し線") {
-            var color = a[o].FillColor;
-            console.log(color.R)
-            if (color.R === 255) {
-
-              const freeText = new Annotations.FreeTextAnnotation();
-              freeText.PageNumber = a[o].PageNumber;
-              freeText.X = a[o].X + 50;
-              freeText.Y = a[o].Y + 50;
-              freeText.Width = 200;
-              freeText.Height = 50;
-              freeText.setPadding(new Annotations.Rect(0, 0, 0, 0));
-              freeText.setContents(fbCount.toString());
-              freeText.FillColor = new Annotations.Color(255, 255, 0);
-              freeText.FontSize = '16pt';
-        
-              annotManager.addAnnotation(freeText);
-              annotManager.redrawAnnotation(freeText);
-          //     //var theseWordsAndQuads = getWordsAndQuadsFromPage(p)
-          //     //var returnWords = compareQuadsAndBounds(theseWordsAndQuads[0], theseWordsAndQuads[1], bounds)
-              console.log("Chushaku contents: " + a[o].getContents())
-          //     //console.println("Chushaku surroundings: " + returnWords)
-               data = data + String(fbCount) + "\r" + a[o].getContents() + '\r\n\r\n';
-    
-             
-               fbCount = fbCount + 1;
-               pagesToSave.push(a[o].PageNumber);
-             } else {
-               annotsToDelete.push(a[o]);
-             }
-           } else {
-            annotsToDelete.push(a[o]);
-          }
+      const { docViewer } = instance;
+      docViewer.on('textSelected', (q, selectedText, a) => {
+        // quads will be an array of 'Quad' objects
+        // text is the selected text as a string
+        if (selectedText.length > 0) {
+          setOneString(selectedText)
         }
-        console.log(pagesToSave)
-        console.log(annotsToDelete);
+      });
+    });
+  }
 
-        // Delete the annots
-        await annotManager.deleteAnnotations(annotsToDelete)
-
-        for (var p = 0; p < docViewer.getPageCount(); p++) {
-          if (pagesToSave.indexOf(p) < 0) {
-            await docViewer.removePages(p);
-          }
+  function startSecondWebViewer(f) {
+    WebViewer(
+      {
+        path: '/webviewer/lib',
+        disableFlattenedAnnotations: true,
+      },
+      second_viewer.current,
+    ).then((instance) => {
+      instance.loadDocument(f, { filename: f.name });
+      const { docViewer } = instance;
+      docViewer.on('textSelected', (q, selectedText, a) => {
+        // quads will be an array of 'Quad' objects
+        // text is the selected text as a string
+        if (selectedText.length > 0) {
+          setTwoString(selectedText);
         }
       });
     });
@@ -116,32 +106,84 @@ const App = () => {
     
 
   return (
-    <div className="App">
-      <div className="header">React sample</div>
-      <label for="file_upload">Choose A file</label>
-        <input type="file" 
-                id="file" 
-                ref={inputFile}
-                accept=".pdf" 
-                onChange={(e)=>{
-                  console.log('---')
-                  console.log(inputFile.current.files[0].name)
-                  startWebViewer(inputFile.current.files[0])
 
-                }}
-          />
-      <label for="annot_upload">Choose an XFDF file</label>
-        <input type="file" 
-                id="xfdfFile" 
-                ref={xfdfFile}
-                accept=".xfdf" 
-                onChange={(e)=>{
-                  console.log(xfdfFile.current.files[0].name)
-                  getAnnots(xfdfFile.current.files[0])
-                  
-                }}
-          />
-      <div className="webviewer" ref={viewer}></div>
+    
+    <div className="App">
+
+      
+    <SettingsModal onChangeValue={onChangeValueHandler}></SettingsModal>
+    <Modal show={showResultsModal} onClose={handleCloseResultsModal}>
+            <Modal.Header closeButton>
+                <Modal.Title>結果</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Row style={{ marginBottom: 25}}>
+                <Col className="d-grid gap-2">    
+                  {oneResult}
+                </Col>
+              </Row>
+              <Row style={{ marginBottom: 25}}>
+                <Col className="d-grid gap-2">    
+                  {twoResult}
+                </Col>
+              </Row>
+              </Modal.Body>
+            <Modal.Footer>
+        <Button variant="success" onClick={handleCloseResultsModal}>
+            続く
+        </Button>
+        </Modal.Footer>
+        </Modal>
+       
+
+    <Container>
+      <Row>
+      <Col style={{justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
+        <Form.Label>PDF</Form.Label>
+        <br />
+        <Form.Control 
+          type="file" 
+          id="file" 
+          ref={inputFile}
+          accept=".pdf" 
+          onChange={(e)=>{
+            console.log('---')
+            console.log(inputFile.current.files[0].name)
+            startWebViewer(inputFile.current.files[0])
+          }}
+        />
+        </Col>
+        <Col style={{justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
+        <Form.Label>PDF 2</Form.Label>
+        <br />
+        <Form.Control
+          type="file" 
+          id="comparisonFile" 
+          ref={comparisonFile}
+          accept=".pdf" 
+          onChange={(e)=>{
+            console.log('---')
+            console.log(comparisonFile.current.files[0].name)
+            startSecondWebViewer(comparisonFile.current.files[0])
+          }}
+        />
+        </Col>
+      </Row>
+      <Row>
+        <Col style={{height: '100%'}}>
+          <div className="webviewer" style={{height: '500px'}} ref={viewer}></div>
+        </Col>
+        <Col style={{height: '100%'}}>
+          <div className="webviewer" style={{height: '500px'}} ref={second_viewer}></div>
+        </Col>
+      </Row>
+      <Row>
+        <Col style={{justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
+        <Button variant="success" size="lg" onClick={performTranslation}>チェック</Button>
+        </Col>
+      </Row>
+    </Container>
+    
     </div>
   );
 };
