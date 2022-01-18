@@ -67,6 +67,7 @@ async function performTranslation() {
       {
         path: '/webviewer/lib',
         disableFlattenedAnnotations: true,
+        licenseKey: 'deDbF45aXA0hfSdH3pju'
       },
       viewer.current,
     ).then((instance) => {
@@ -90,6 +91,7 @@ async function performTranslation() {
       {
         path: '/webviewer/lib',
         disableFlattenedAnnotations: true,
+        licenseKey: 'deDbF45aXA0hfSdH3pju'
       },
       second_viewer.current,
     ).then((instance) => {
