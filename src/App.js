@@ -72,12 +72,15 @@ async function performTranslation() {
     ).then((instance) => {
       instance.loadDocument(f, { filename: f.name });
       const { docViewer } = instance;
-      docViewer.on('textSelected', (q, selectedText, a) => {
-        // quads will be an array of 'Quad' objects
-        // text is the selected text as a string
-        if (selectedText.length > 0) {
-          setOneString(selectedText)
-        }
+      docViewer.on('documentLoaded', () => {
+        console.log("doc was loaded")
+        docViewer.on('textSelected', (q, selectedText, a) => {
+          // quads will be an array of 'Quad' objects
+          // text is the selected text as a string
+          if (selectedText.length > 0) {
+            setOneString(selectedText)
+          }
+        });
       });
     });
   }
