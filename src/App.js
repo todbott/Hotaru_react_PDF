@@ -9,8 +9,8 @@ import Translate from './services/Translator';
 const App = () => {
   const viewer = useRef(null);
   const second_viewer = useRef(null);
-  const inputFile = useRef(document.getElementById("file"))
-  const comparisonFile = useRef(document.getElementById("comparisonFile"))
+  const inputFile = useRef(document.getElementById("file"));
+  const comparisonFile = useRef(document.getElementById("comparisonFile"));
 
   // Get from the SettingsModal
   const [apiKey, setApiKey] = useState("");
@@ -19,8 +19,8 @@ const App = () => {
   const [display, setDisplay] = useState("ja");
 
   // Get from App.js
-  const [oneString, setOneString] = useState("")
-  const [twoString, setTwoString] = useState("")
+  const [oneString, setOneString] = useState("");
+  const [twoString, setTwoString] = useState("");
 
   const [showResultsModal, setShowResultsModal] = useState(false);
 
@@ -31,20 +31,20 @@ const App = () => {
 
   const onChangeValueHandler = (val) => {
     
-    let whichVal = val.split(":")[0]
-    let valToSet = val.split(":")[1]
+    let whichVal = val.split(":")[0];
+    let valToSet = val.split(":")[1];
 
     if (whichVal === "apiKey") {
-      setApiKey(valToSet)
+      setApiKey(valToSet);
     }
     if (whichVal === "sourceCode") {
-      setSource(valToSet)
+      setSource(valToSet);
     }
     if (whichVal === "targetCode") {
-      setTarget(valToSet)
+      setTarget(valToSet);
     }
     if (whichVal === "displayCode") {
-      setDisplay(valToSet)
+      setDisplay(valToSet);
     }
   }
 
@@ -53,11 +53,11 @@ function handleCloseResultsModal() {
 }
 
 async function performTranslation() {
-  let returned = await Translate(source, target, display, apiKey, oneString, twoString)
-  console.log(returned)
-  setOneResult(returned[0])
-  setTwoResult(returned[1])
-  setShowResultsModal(true)
+  let returned = await Translate(source, target, display, apiKey, oneString, twoString);
+  console.log(returned);
+  setOneResult(returned[0]);
+  setTwoResult(returned[1]);
+  setShowResultsModal(true);
 }
 
 
@@ -65,26 +65,26 @@ async function performTranslation() {
   async function startWebViewer(f, e) {
     e.preventDefault();
 
-    console.log("starting")
+    console.log("starting");
     let instance = await WebViewer(
       {
         path: '/webviewer/lib',
         disableFlattenedAnnotations: true,
         licenseKey: 'deDbF45aXA0hfSdH3pju'
       },
-      viewer.current)
+      viewer.current);
 
-      console.log(instance)
+      console.log(instance);
     
       instance.loadDocument(f, { filename: f.name });
       const { docViewer } = instance;
       docViewer.on('documentLoaded', () => {
-        console.log("doc was loaded")
+        console.log("doc was loaded");
         docViewer.on('textSelected', (q, selectedText, a) => {
           // quads will be an array of 'Quad' objects
           // text is the selected text as a string
           if (selectedText.length > 0) {
-            setOneString(selectedText)
+            setOneString(selectedText);
           }
         });
       });
@@ -98,7 +98,7 @@ async function performTranslation() {
         disableFlattenedAnnotations: true,
         licenseKey: 'deDbF45aXA0hfSdH3pju'
       },
-      second_viewer.current,
+      second_viewer.current
     ).then((instance) => {
       instance.loadDocument(f, { filename: f.name });
       const { docViewer } = instance;
@@ -155,9 +155,9 @@ async function performTranslation() {
           ref={inputFile}
           accept=".pdf" 
           onChange={(e)=>{
-            console.log('---')
-            console.log(inputFile.current.files[0].name)
-            startWebViewer(inputFile.current.files[0], e)
+            console.log('---');
+            console.log(inputFile.current.files[0].name);
+            startWebViewer(inputFile.current.files[0], e);
           }}
         />
         </Col>
@@ -170,9 +170,9 @@ async function performTranslation() {
           ref={comparisonFile}
           accept=".pdf" 
           onChange={(e)=>{
-            console.log('---')
-            console.log(comparisonFile.current.files[0].name)
-            startSecondWebViewer(comparisonFile.current.files[0])
+            console.log('---');
+            console.log(comparisonFile.current.files[0].name);
+            startSecondWebViewer(comparisonFile.current.files[0]);
           }}
         />
         </Col>
