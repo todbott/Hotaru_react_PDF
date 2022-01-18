@@ -7,8 +7,8 @@ import SettingsModal from './modals/SettingsModal';
 import Translate from './services/Translator';
 
 const App = () => {
-  const viewer = useRef(null);
-  const second_viewer = useRef(null);
+  const viewer = useRef(document.getElementById("viewer"));
+  const second_viewer = useRef(document.getElementById("second_viewer"));
   const inputFile = useRef(document.getElementById("file"))
   const comparisonFile = useRef(document.getElementById("comparisonFile"))
 
@@ -144,7 +144,11 @@ async function performTranslation() {
           id="file" 
           ref={inputFile}
           accept=".pdf" 
-          onChange={startWebViewer(inputFile.current.files[0])}
+          onChange={(e)=>{
+            console.log('---')
+            console.log(inputFile.current.files[0].name)
+            startWebViewer(inputFile.current.files[0])
+          }}
         />
         </Col>
         <Col style={{justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
@@ -155,16 +159,20 @@ async function performTranslation() {
           id="comparisonFile" 
           ref={comparisonFile}
           accept=".pdf" 
-          onChange={startSecondWebViewer(comparisonFile.current.files[0])}
+          onChange={(e)=>{
+            console.log('---')
+            console.log(comparisonFile.current.files[0].name)
+            startSecondWebViewer(comparisonFile.current.files[0])
+          }}
         />
         </Col>
       </Row>
       <Row>
         <Col style={{height: '100%'}}>
-          <div className="webviewer" style={{height: '500px'}} ref={viewer}></div>
+          <div className="webviewer" id="viewer" style={{height: '500px'}} ref={viewer}></div>
         </Col>
         <Col style={{height: '100%'}}>
-          <div className="webviewer" style={{height: '500px'}} ref={second_viewer}></div>
+          <div className="webviewer" id="second_viewer" style={{height: '500px'}} ref={second_viewer}></div>
         </Col>
       </Row>
       <Row>
