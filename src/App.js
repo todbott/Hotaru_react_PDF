@@ -66,6 +66,7 @@ async function performTranslation() {
     e.preventDefault();
 
     console.log("starting");
+    try {
     let instance = await WebViewer(
       {
         path: '/webviewer/lib',
@@ -73,7 +74,6 @@ async function performTranslation() {
         licenseKey: 'deDbF45aXA0hfSdH3pju'
       },
       viewer.current);
-
       console.log(instance);
     
       instance.loadDocument(f, { filename: f.name });
@@ -88,6 +88,11 @@ async function performTranslation() {
           }
         });
       });
+    } catch (e) {
+      console.log(e)
+    }
+
+
     }
   
 
