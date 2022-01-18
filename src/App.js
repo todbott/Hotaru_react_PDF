@@ -7,8 +7,8 @@ import SettingsModal from './modals/SettingsModal';
 import Translate from './services/Translator';
 
 const App = () => {
-  const viewer = useRef(document.getElementById("viewer"));
-  const second_viewer = useRef(document.getElementById("second_viewer"));
+  const viewer = useRef(null);
+  const second_viewer = useRef(null);
   const inputFile = useRef(document.getElementById("file"))
   const comparisonFile = useRef(document.getElementById("comparisonFile"))
 
@@ -63,6 +63,7 @@ async function performTranslation() {
 
 
   async function startWebViewer(f) {
+    console.log("starting")
     WebViewer(
       {
         path: '/webviewer/lib',
