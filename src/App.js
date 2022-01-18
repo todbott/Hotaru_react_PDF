@@ -62,17 +62,20 @@ async function performTranslation() {
 
 
 
-  async function startWebViewer(f) {
+  async function startWebViewer(f, e) {
+    e.preventDefault();
+
     console.log("starting")
-    WebViewer(
+    let instance = await WebViewer(
       {
         path: '/webviewer/lib',
         disableFlattenedAnnotations: true,
         licenseKey: 'deDbF45aXA0hfSdH3pju'
       },
-      viewer.current,
-    ).then((instance) => {
-      console.log("got an instance")
+      viewer.current)
+
+      console.log(instance)
+    
       instance.loadDocument(f, { filename: f.name });
       const { docViewer } = instance;
       docViewer.on('documentLoaded', () => {
@@ -85,10 +88,8 @@ async function performTranslation() {
           }
         });
       });
-    }).catch((e) => {
-      console.log(e)
-    });
-  }
+    }
+  
 
   async function startSecondWebViewer(f) {
     WebViewer(
@@ -156,7 +157,7 @@ async function performTranslation() {
           onChange={(e)=>{
             console.log('---')
             console.log(inputFile.current.files[0].name)
-            startWebViewer(inputFile.current.files[0])
+            startWebViewer(inputFile.current.files[0], e)
           }}
         />
         </Col>
