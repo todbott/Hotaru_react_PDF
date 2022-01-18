@@ -22,8 +22,6 @@ const App = () => {
   const [oneString, setOneString] = useState("")
   const [twoString, setTwoString] = useState("")
 
-
-  const [setShowSettingsModal] = useState(true);
   const [showResultsModal, setShowResultsModal] = useState(false);
 
   // Send to ResultsModal
@@ -146,11 +144,7 @@ async function performTranslation() {
           id="file" 
           ref={inputFile}
           accept=".pdf" 
-          onChange={(e)=>{
-            console.log('---')
-            console.log(inputFile.current.files[0].name)
-            startWebViewer(inputFile.current.files[0])
-          }}
+          onChange={startWebViewer(inputFile.current.files[0])}
         />
         </Col>
         <Col style={{justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
@@ -161,11 +155,7 @@ async function performTranslation() {
           id="comparisonFile" 
           ref={comparisonFile}
           accept=".pdf" 
-          onChange={(e)=>{
-            console.log('---')
-            console.log(comparisonFile.current.files[0].name)
-            startSecondWebViewer(comparisonFile.current.files[0])
-          }}
+          onChange={startSecondWebViewer(comparisonFile.current.files[0])}
         />
         </Col>
       </Row>
