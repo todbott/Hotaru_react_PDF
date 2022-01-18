@@ -72,6 +72,7 @@ async function performTranslation() {
       },
       viewer.current,
     ).then((instance) => {
+      console.log("got an instance")
       instance.loadDocument(f, { filename: f.name });
       const { docViewer } = instance;
       docViewer.on('documentLoaded', () => {
