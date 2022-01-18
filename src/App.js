@@ -84,6 +84,8 @@ async function performTranslation() {
           }
         });
       });
+    }).catch((e) => {
+      console.log(e)
     });
   }
 
