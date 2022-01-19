@@ -6,6 +6,8 @@ import './App.css';
 import SettingsModal from './modals/SettingsModal';
 import Translate from './services/Translator';
 
+
+
 const App = () => {
   const viewer = useRef(null);
   const second_viewer = useRef(null);
@@ -48,6 +50,16 @@ const App = () => {
     }
   }
 
+
+
+
+
+
+
+
+
+
+
 function handleCloseResultsModal() {
   setShowResultsModal(false);
 }
@@ -69,7 +81,7 @@ async function performTranslation() {
     try {
     let instance = await WebViewer(
       {
-        path: '/webviewer/lib',
+        path: './webviewer/lib',
         disableFlattenedAnnotations: true,
         licenseKey: 'deDbF45aXA0hfSdH3pju'
       },
@@ -196,6 +208,15 @@ async function performTranslation() {
         </Col>
       </Row>
     </Container>
+
+
+
+
+    <label for="file_upload">Choose A file</label>
+<input type="file" id="file_upload" name="file_upload" accept=".pdf"/>
+
+<div id='viewer' style={{"width":"1024px","height":"600px"}}></div>
+
     
     </div>
   );
