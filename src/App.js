@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import WebViewer from '@pdftron/pdfjs-express';
 import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
 import './App.css';
@@ -9,7 +9,8 @@ import Translate from './services/Translator';
 
 
 const App = () => {
-  const viewer = useRef(null);
+  const viewer = useRef(document.getElementById("viewer"));
+  const viewert = useRef(document.getElementById("viewert"));
   const second_viewer = useRef(null);
   const inputFile = useRef(document.getElementById("file"));
   const comparisonFile = useRef(document.getElementById("comparisonFile"));
@@ -49,41 +50,6 @@ const App = () => {
       setDisplay(valToSet);
     }
   }
-
-
-
-
-
-
-
-  const input = document.getElementById('file_upload');
-
-  WebViewer({
-    path: '/webviewer/lib',
-    disableFlattenedAnnotations: true,
-    licenseKey: 'deDbF45aXA0hfSdH3pju'
-  },
-  viewer.current)
-    .then(instance => {
-      input.on('change', () => {
-        // Get the file from the input
-        const file = input.files[0];
-        instance.UI.loadDocument(file, { filename: file.name });
-      });
-
-      const { documentViewer } = instance.Core;
-      documentViewer.on('documentLoaded', () => {
-        // perform document operations
-      });
-    });
-
-
-
-
-
-
-
-
 
 function handleCloseResultsModal() {
   setShowResultsModal(false);
@@ -240,7 +206,7 @@ async function performTranslation() {
     <label for="file_upload">Choose A file</label>
 <input type="file" id="file_upload" name="file_upload" accept=".pdf"/>
 
-<div id='viewer' style={{"width":"1024px","height":"600px"}}></div>
+<div id='viewert' style={{"width":"1024px","height":"600px"}}></div>
 
     
     </div>
