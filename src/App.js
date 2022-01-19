@@ -56,6 +56,31 @@ const App = () => {
 
 
 
+  const input = document.getElementById('file_upload');
+
+  WebViewer({
+    path: '/webviewer/lib',
+    disableFlattenedAnnotations: true,
+    licenseKey: 'deDbF45aXA0hfSdH3pju'
+  },
+  viewer.current)
+    .then(instance => {
+      input.on('change', () => {
+        // Get the file from the input
+        const file = input.files[0];
+        instance.UI.loadDocument(file, { filename: file.name });
+      });
+
+      const { documentViewer } = instance.Core;
+      documentViewer.on('documentLoaded', () => {
+        // perform document operations
+      });
+    });
+
+
+
+
+
 
 
 
@@ -81,7 +106,7 @@ async function performTranslation() {
     try {
     let instance = await WebViewer(
       {
-        path: './webviewer/lib',
+        path: '/webviewer/lib',
         disableFlattenedAnnotations: true,
         licenseKey: 'deDbF45aXA0hfSdH3pju'
       },
