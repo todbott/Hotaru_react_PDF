@@ -199,16 +199,6 @@ async function performTranslation() {
         </Col>
       </Row>
     </Container>
-
-
-
-
-    <label for="file_upload">Choose A file</label>
-<input type="file" id="file_upload" name="file_upload" accept=".pdf"/>
-
-<div id='viewert' style={{"width":"1024px","height":"600px"}}></div>
-
-    
     </div>
   );
 };
