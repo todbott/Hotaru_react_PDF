@@ -10,7 +10,7 @@ function SettingsModal(props) {
 
     return (
         <Modal show={show} onClose={handleClose}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton onClick={handleClose}>
                 <Modal.Title>設定</Modal.Title>
             </Modal.Header>
             <Modal.Body>

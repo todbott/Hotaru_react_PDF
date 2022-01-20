@@ -129,24 +129,30 @@ async function performTranslation() {
       
     <SettingsModal onChangeValue={onChangeValueHandler}></SettingsModal>
     <Modal show={showResultsModal} onClose={handleCloseResultsModal}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton onClick={handleCloseResultsModal}>
                 <Modal.Title>結果</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Row style={{ marginBottom: 25}}>
+            <Row style={{ marginBottom: 5, fontWeight: 'bold'}}>
                 <Col className="d-grid gap-2">    
-                  {oneResult}
+                  PDF 1
+                </Col>
+                <Col className="d-grid gap-2">    
+                  PDF 2
                 </Col>
               </Row>
               <Row style={{ marginBottom: 25}}>
-                <Col className="d-grid gap-2">    
+                <Col className="d-grid gap-2" style={{ borderColor: 'grey', borderWidth: 1}}>    
+                  {oneResult}
+                </Col>
+                <Col className="d-grid gap-2" style={{ borderColor: 'grey', borderWidth: 1}}>  
                   {twoResult}
                 </Col>
               </Row>
               </Modal.Body>
             <Modal.Footer>
         <Button variant="success" onClick={handleCloseResultsModal}>
-            続く
+            閉じる
         </Button>
         </Modal.Footer>
         </Modal>
@@ -155,7 +161,7 @@ async function performTranslation() {
     <Container>
       <Row>
       <Col style={{justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
-        <Form.Label>PDF</Form.Label>
+        <Form.Label>PDF 1</Form.Label>
         <br />
         <Form.Control 
           type="file" 
